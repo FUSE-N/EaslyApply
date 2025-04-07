@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { ReactNode, useState } from "react";
 import { 
   BarChart2, 
   FileText, 
@@ -8,15 +8,24 @@ import {
   Bot, 
   Settings, 
   ChevronLeft, 
-  ChevronRight 
+  ChevronRight,
+  Bell,
+  HelpCircle,
+  User,
+  LogOut,
+  CreditCard,
+  Star,
+  ChevronUp,
+  Menu,
+  X
 } from "lucide-react";
 
-// Utility function to replace cn from @/lib/utils
-const classNames = (...classes: (string | boolean | undefined)[]) => {
+// Utility function for class names
+const classNames = (...classes) => {
   return classes.filter(Boolean).join(" ");
 };
 
-// Mock function to replace useIsMobile hook
+// Mock mobile hook - in real implementation you'd use your actual hook
 const useIsMobile = () => {
   const [width, setWidth] = useState(window.innerWidth);
   
@@ -29,37 +38,12 @@ const useIsMobile = () => {
   return width < 768;
 };
 
-// Simple MockNavLink component to replace react-router-dom's NavLink
-const MockNavLink = ({ 
-  to, 
-  className, 
-  title, 
-  children 
-}: { 
-  to: string; 
-  className: string; 
-  title?: string; 
-  children: React.ReactNode 
-}) => {
-  // Mock isActive state - in a real app this would be determined by the router
-  const isActive = to === "/";
-  
-  return (
-    <a 
-      href={to} 
-      className={typeof className === 'function' ? className({ isActive }) : className} 
-      title={title}
-    >
-      {children}
-    </a>
-  );
-};
-
 const navigationItems = [
   {
     title: "Dashboard",
     icon: BarChart2,
     path: "/",
+    isActive: true,
   },
   {
     title: "Resume Builder",
@@ -93,110 +77,199 @@ const navigationItems = [
   },
 ];
 
-interface AppSidebarProps {
-  defaultCollapsed?: boolean;
-}
+const utilityItems = [
+  {
+    title: "Notifications",
+    icon: Bell,
+    path: "/notifications",
+    badge: 3,
+  },
+  {
+    title: "Support",
+    icon: HelpCircle,
+    path: "/support",
+  }
+];
 
-const AppSidebar = ({ defaultCollapsed = false }: AppSidebarProps) => {
-  const isMobile = useIsMobile();
-  const [collapsed, setCollapsed] = useState(defaultCollapsed);
+const userMenuItems = [
+  {
+    title: "Upgrade to Pro",
+    icon: Star,
+    path: "/upgrade",
+  },
+  {
+    title: "Account",
+    icon: User,
+    path: "/account",
+  },
+  {
+    title: "Billing",
+    icon: CreditCard,
+    path: "/billing",
+  },
+  {
+    title: "Notifications",
+    icon: Bell,
+    path: "/notifications",
+  },
+  {
+    title: "Log out",
+    icon: LogOut,
+    path: "/logout",
+  },
+];
+
+// Collapsible Sidebar Component
+const AppSidebar = ({ collapsed }) => {
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
   
-  const toggleSidebar = () => {
-    setCollapsed(!collapsed);
+  const toggleUserMenu = () => {
+    setUserMenuOpen(!userMenuOpen);
   };
 
-  return (
-    <div className={classNames(
-      "h-[calc(100vh-2rem)] my-4 flex flex-col shadow-lg overflow-hidden rounded-xl border relative",
-      "bg-gray-800 text-white border-gray-700",
-      collapsed ? "w-16" : "w-64" // Fixed width for expanded state
-    )}>
-              {/* Toggle button - outside version */}
-        <button 
-        onClick={toggleSidebar}
-        className="absolute -right-3 top-12 bg-gray-700 text-white rounded-full p-1 shadow-md hover:bg-gray-600 transition-all z-10"
-        >
-        {collapsed ? 
-          <ChevronRight className="h-4 w-4" /> : 
-          <ChevronLeft className="h-4 w-4" />
-        }
-        </button>
-
-        <div className={classNames(
-        "flex items-center px-4 py-4 border-b border-gray-700",
-        collapsed ? "justify-center" : "justify-between"
-        )}>
-        {/* Logo section - always visible */}
-        <div className="flex items-center gap-2">
-          <div className="flex items-center justify-center w-10 h-10 rounded-md bg-white transition-all duration-300 hover:scale-105 shrink-0">
-            <div className="h-8 w-8 rounded-md bg-blue-500 flex items-center justify-center text-white font-bold">
-              <img src="/images/AI-CV.png" alt="Logo" className="h-8 w-8 rounded-md" />
-            </div>
-          </div>
-          
-          {/* Text only shown when expanded */}
-          {!collapsed && (
-            <div className="flex flex-col min-w-0 overflow-hidden transition-opacity duration-200">
-              <span className="font-medium text-white whitespace-nowrap">EaslyApply</span>
-              <span className="text-xs text-gray-300 whitespace-nowrap">Your Career Assistant</span>
-            </div>
-          )}
-        </div>
-
-        {/* Optional in-header toggle button */}
-        {!collapsed && (
-          <button 
-            onClick={toggleSidebar} 
-            className="p-1 rounded-md hover:bg-zinc-700"
-          >
-            <ChevronLeft size={18} />
-          </button>
+  // Navigation item component
+  const NavItem = ({ item }) => (
+    <li>
+      <a 
+        href={item.path}
+        className={classNames(
+          "flex items-center rounded-md transition-colors duration-200",
+          collapsed ? "justify-center p-3" : "gap-3 px-4 py-2.5",
+          item.isActive 
+            ? "bg-blue-600 text-white" 
+            : "text-gray-300 hover:bg-gray-700 hover:text-white"
         )}
+        title={collapsed ? item.title : undefined}
+      >
+        <item.icon className="h-5 w-5 flex-shrink-0" />
+        {!collapsed && (
+          <span className="whitespace-nowrap overflow-hidden text-ellipsis">
+            {item.title}
+          </span>
+        )}
+        {item.badge && (
+          <div className={classNames(
+            "bg-red-500 text-white text-xs font-medium rounded-full flex items-center justify-center",
+            collapsed ? "h-5 w-5 absolute top-1 right-1" : "ml-auto px-2 py-0.5 min-w-[20px]"
+          )}>
+            {item.badge}
+          </div>
+        )}
+      </a>
+    </li>
+  );
+
+  return (
+    <>
+      <div className={classNames(
+        "h-screen  my-4 flex flex-col shadow-lg overflow-hidden rounded-xl border relative",
+        "bg-gray-800 text-white border-gray-700 transition-all duration-300",
+        collapsed ? "w-16" : "w-64"
+      )}>
+        {/* Header with logo */}
+        <div className={classNames(
+          "flex items-center px-4 py-4 border-b border-gray-700",
+          collapsed ? "justify-center" : "justify-between"
+        )}>
+          <div className="flex items-center gap-2">
+            <div className="flex items-center justify-center w-10 h-10 rounded-md bg-white transition-all duration-300 hover:scale-105 shrink-0">
+              <div className="h-8 w-8 rounded-md bg-blue-500 flex items-center justify-center text-white font-bold">
+                EA
+              </div>
+            </div>
+            
+            {/* Text only shown when expanded */}
+            {!collapsed && (
+              <div className="flex flex-col min-w-0 overflow-hidden">
+                <span className="font-medium text-white whitespace-nowrap">EaslyApply</span>
+                <span className="text-xs text-gray-300 whitespace-nowrap">Your Career Assistant</span>
+              </div>
+            )}
+          </div>
         </div>
 
-      <nav className="flex-1 py-4 overflow-y-auto">
-        <ul className={classNames("space-y-1", collapsed ? "px-1" : "px-2")}>
-          {navigationItems.map((item, index) => (
-            <li key={item.title} style={{ animationDelay: `${index * 50}ms` }}>
-              <MockNavLink
-                to={item.path}
-                className={classNames(
-                  "flex items-center rounded-md text-white",
-                  "hover:bg-gray-700 transition-colors duration-200",
-                  collapsed 
-                    ? "justify-center p-3" 
-                    : "gap-3 px-4 py-2.5",
-                  item.path === "/" && "bg-blue-600" // Replace with actual active path logic
-                )}
-                title={collapsed ? item.title : undefined}
+        {/* Main navigation */}
+        <nav className="flex-1 py-4 overflow-y-auto">
+          <ul className={classNames("space-y-1", collapsed ? "px-1" : "px-2")}>
+            {navigationItems.map((item) => (
+              <NavItem key={item.title} item={item} />
+            ))}
+          </ul>
+          
+          <div className={classNames("mt-6 px-4 pb-2", collapsed ? "text-center" : "")}>
+            <p className="text-xs uppercase tracking-wider text-gray-400">
+              {collapsed ? "" : "Support"}
+            </p>
+          </div>
+          <ul className={classNames("space-y-1", collapsed ? "px-1" : "px-2")}>
+            {utilityItems.map((item) => (
+              <NavItem key={item.title} item={item} />
+            ))}
+          </ul>
+        </nav>
+
+        {/* User profile button */}
+        <div className={classNames(
+          "p-4 border-t border-gray-700 transition-all duration-200",
+          userMenuOpen ? "bg-gray-700" : ""
+        )}>
+          <div 
+            onClick={toggleUserMenu}
+            className={classNames(
+              "flex items-center gap-3 cursor-pointer rounded-md p-2 transition-all",
+              collapsed ? "justify-center" : "",
+              "hover:bg-gray-700"
+            )}
+          >
+            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white flex-shrink-0">
+              <span className="font-medium">S</span>
+            </div>
+            
+            {!collapsed && (
+              <>
+                <div className="flex-1 overflow-hidden">
+                  <div className="font-medium text-sm text-white truncate">shadcn</div>
+                  <div className="text-xs text-gray-400 truncate">m@example.com</div>
+                </div>
+                <ChevronUp 
+                  className={classNames(
+                    "h-4 w-4 text-gray-400 transition-transform",
+                    userMenuOpen ? "transform rotate-180" : ""
+                  )} 
+                />
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* User menu popup - Now outside the sidebar */}
+      {userMenuOpen && (
+        <div className="fixed bottom-4 left-4 bg-white rounded-lg shadow-lg overflow-hidden z-[60] animate-fade-in w-[280px]">
+          <div className="p-4 bg-gray-50 border-b flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white">
+              <span className="font-medium">S</span>
+            </div>
+            <div>
+              <div className="font-medium text-gray-900">shadcn</div>
+              <div className="text-sm text-gray-500">m@example.com</div>
+            </div>
+          </div>
+          <div className="py-1">
+            {userMenuItems.map((item) => (
+              <a 
+                key={item.title}
+                href={item.path}
+                className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
               >
-                <item.icon className="h-5 w-5 flex-shrink-0" />
-                {!collapsed && (
-                  <span className="whitespace-nowrap overflow-hidden text-ellipsis transition-opacity duration-200">
-                    {item.title}
-                  </span>
-                )}
-              </MockNavLink>
-            </li>
-          ))}
-        </ul>
-      </nav>
-
-      {!collapsed && (
-        <div className="p-4 border-t border-gray-700" style={{ animationDelay: "300ms" }}>
-          <div className="flex items-center justify-center p-2 rounded-md bg-blue-600 text-white cursor-pointer hover:bg-blue-700 transition-all duration-200 hover:scale-105">
-            <span className="font-medium whitespace-nowrap">Upgrade to Pro</span>
+                <item.icon className="mr-3 h-4 w-4 text-gray-500" />
+                {item.title}
+              </a>
+            ))}
           </div>
         </div>
       )}
-      {collapsed && (
-        <div className="p-2 border-t border-gray-700" style={{ animationDelay: "300ms" }}>
-          <div className="flex items-center justify-center p-2 rounded-md bg-blue-600 text-white cursor-pointer hover:bg-blue-700 transition-all duration-200">
-            <Settings className="h-5 w-5" />
-          </div>
-        </div>
-      )}
-    </div>
+    </>
   );
 };
 
