@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -34,7 +33,7 @@ const LandingPage = () => {
 
   const testimonials = [
     {
-      quote: "AI Job Buddy helped me land my dream job by perfecting my resume and preparing me for tough interview questions.",
+      quote: "EaslyApply helped me land my dream job by perfecting my resume and preparing me for tough interview questions.",
       author: "Michael T.",
       role: "Software Engineer",
     },
@@ -56,9 +55,10 @@ const LandingPage = () => {
       <header className="w-full py-4 px-6 md:px-10 flex items-center justify-between bg-background border-b">
         <div className="flex items-center gap-2">
           <div className="bg-primary rounded-md h-8 w-8 flex items-center justify-center">
-            <span className="text-primary-foreground font-bold">JB</span>
+            <img src="/images/AI-CV.png" alt="EaslyApply Logo" className="h-8 w-8" />
+            {/* <span className="text-primary-foreground font-bold">JB</span> */}
           </div>
-          <span className="font-semibold text-xl">AI Job Buddy</span>
+          <span className="font-semibold text-xl">EaslyApply</span>
         </div>
         <div>
           <Link to="/auth">
@@ -99,7 +99,7 @@ const LandingPage = () => {
               </Link>
             </div>
           </motion.div>
-          <motion.div
+          {/* <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, delay: 0.2 }}
@@ -115,7 +115,7 @@ const LandingPage = () => {
                 Watch Demo <ArrowRight className="h-4 w-4" />
               </Button>
             </div>
-          </motion.div>
+          </motion.div> */}
         </div>
       </section>
 
@@ -255,7 +255,7 @@ const LandingPage = () => {
         <div className="max-w-7xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">Ready to Transform Your Job Search?</h2>
           <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto opacity-90">
-            Join thousands of successful job seekers who found their dream jobs with AI Job Buddy
+            Join thousands of successful job seekers who found their dream jobs with EaslyApply
           </p>
           <Link to="/auth?signup=true">
             <Button size="lg" variant="secondary" className="gap-2">
@@ -270,10 +270,11 @@ const LandingPage = () => {
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex items-center gap-2 mb-6 md:mb-0">
-              <div className="bg-primary rounded-md h-8 w-8 flex items-center justify-center">
-                <span className="text-primary-foreground font-bold">JB</span>
+              <div className="bg-primary rounded-md h-11 w-50 flex items-center justify-center">
+                <img src="/images/LOGO-AI-CV.png" alt="LOGO-AI-CV" className="h-11 w-50" />
+                {/* <span className="text-primary-foreground font-bold">JB</span> */}
               </div>
-              <span className="font-semibold">AI Job Buddy</span>
+              {/* <span className="font-semibold">EaslyApply</span> */}
             </div>
             <div className="flex flex-wrap gap-8 text-sm text-muted-foreground">
               <a href="#" className="hover:text-foreground">About</a>
@@ -284,7 +285,7 @@ const LandingPage = () => {
             </div>
           </div>
           <div className="mt-8 pt-8 border-t text-center text-sm text-muted-foreground">
-            <p>© {new Date().getFullYear()} AI Job Buddy. All rights reserved.</p>
+            <p>© {new Date().getFullYear()}  All rights reserved.</p>
           </div>
         </div>
       </footer>

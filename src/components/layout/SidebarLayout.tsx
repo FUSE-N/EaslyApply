@@ -51,7 +51,7 @@ const SidebarLayout = ({ children }: SidebarLayoutProps) => {
           >
             {sidebarOpen ? <X size={20} className="animate-fade-in" /> : <Menu size={20} className="animate-fade-in" />}
           </button>
-          <h1 className="font-semibold text-lg md:text-xl">AI Job Buddy</h1>
+          <h1 className="font-semibold text-lg md:text-xl">EaslyApply</h1>
         </header>
 
         {/* Page content */}
